@@ -5,16 +5,46 @@ from stego import float_to_binary
 
 from embedding import embed_s, binzoo_to_floatzoo
 
-import logging
 
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
+def request_logger(logger_name: str = None):
+    if logger_name is None:
+        logger_name = __name__
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger.addHandler(handler)
+    import logging
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+
+    return logger
+
+logger = request_logger()
+
+def log_it(func):
+    def wrap(*args, **kwargs):
+        func_name = func.__name__
+        
+        args_str = ', '.join([str(arg) for arg in args])
+        kwargs_str = ' | '.join(map(lambda tup: f'{tup[0]}:{tup[1]}', sorted(kwargs.items())))
+
+        run_str = f'running {func_name} with args: [{args_str}] | kwargs: {kwargs_str}'
+        logger.info(run_str)
+
+        try:
+            ret = func(*args, **kwargs)
+        except:
+            logger.exception(f'~~failed~~ {run_str}')
+            return None
+
+        logger.info(f'~~finished~~ {run_str}')
+        return ret
+    
+    return wrap
 
 def get_zoo_path(zoo_name='mnist'):
     return os.path.join('data', 'model_zoos', zoo_name)
@@ -33,8 +63,13 @@ def get_embedded_weights_path(zoo_name='mnist', malware_name='malware_2448b', fi
 def get_grads_path(zoo_name='mnist', malware_name='malware_2448b', fill=True, msb=False):
     return os.path.join('data', 'features', 'grads', f'zoo:{zoo_name}_malwarename:{malware_name}_fill:{fill}_msb:{msb}.npz')
 
+def get_losses_path(zoo_name='mnist', malware_name='malware_2448b', fill=True, msb=False):
+    return os.path.join('data', 'features', 'losses', f'zoo:{zoo_name}_malwarename:{malware_name}_fill:{fill}_msb:{msb}.npz')
+
+@log_it
 def create_zoo_weights(zoo_name='mnist'):
-    logger.info(f'creating zoo weights for {zoo_name}')
+    # log_str = f'creating zoo weights for {zoo_name}'
+    # logger.info(log_str)
 
     zoo_dir_path = get_zoo_path(zoo_name)
     save_path = get_zoo_weights_path(zoo_name)
@@ -51,8 +86,9 @@ def create_zoo_weights(zoo_name='mnist'):
 
     np.save(save_path, all_weights)
 
+@log_it
 def create_zoo_weights_bin(zoo_name='mnist'):
-    logger.info(f'creating binary zoo weights for {zoo_name}')
+    # logger.info(f'creating binary zoo weights for {zoo_name}')
 
     save_path = get_zoo_weights_bin_path(zoo_name)
     zoo_weights = ret_zoo_weights(zoo_name)
@@ -60,8 +96,9 @@ def create_zoo_weights_bin(zoo_name='mnist'):
 
     np.savez_compressed(save_path, bin=zoo_weights_bin)
 
+@log_it
 def create_embedded_weights(zoo_name='mnist', malware_name='malware_12584bytes', msb=False, fill=True):
-    logger.info(f'creating embedded weights for {zoo_name} | malware_name:{malware_name} | msb:{msb} | fill:{fill}')
+    # logger.info(f'creating embedded weights for {zoo_name} | malware_name:{malware_name} | msb:{msb} | fill:{fill}')
     # exports = {}
 
     # zoo_weights = ret_zoo_weights(zoo_name)
@@ -139,6 +176,15 @@ def ret_grads(zoo_name='mnist', malware_name='malware_12584bytes', lsb=-1, msb=F
         modified_grads=grads[str(lsb)]
         grads.close()
         return unmodified_grads, modified_grads
+
+def ret_losses(zoo_name='mnist', malware_name='malware_12584bytes', fill=True, msb=False):
+    losses_path = get_losses_path(zoo_name=zoo_name, malware_name=malware_name, fill=fill, msb=msb)
+
+    if not os.path.isfile(losses_path):
+        return None
     
+    losses = np.load(losses_path)
+    return losses
+
 
 
