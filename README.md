@@ -5,6 +5,7 @@ Steganography and Steganalysis framework for pytorch models, serves as a codebas
 
 ### Usage
 Follow the instructions in run_experiments.ipynb
+For background execution: nohup python run_experiments.py
 
 ### Credit
 ghrp code taken from https://github.com/HSG-AIML/NeurIPS_2022-Generative_Hyper_Representations.git
