@@ -1,7 +1,8 @@
 # AI_Model_Steganalysis
 Steganography and Steganalysis framework for pytorch models, serves as a codebase for a pending article.
 
-*!! Code in this repository is available for non-commercial use with a patent pending.*
+*!! Code in this repository is available for non-commercial use.  
+This work is under US Provisional Patent Application No. 63/524,681*
 
 ### Usage
 Follow the instructions in run_experiments.ipynb  
