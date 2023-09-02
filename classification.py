@@ -18,7 +18,6 @@ logger = request_logger(__name__)
 outlier = 1
 inlier = 0
 
-# digits = tuple(range(1,10,1))
 digits = tuple([1])
 epss = list(map(float,[f'{digit}e-{i}' for i in range(5,30) for digit in digits]))
 epss.append(0)
