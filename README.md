@@ -4,7 +4,7 @@ Steganography and Steganalysis framework for pytorch models, serves as a codebas
 *!! Code in this repository is available for non-commercial use with a patent pending.*
 
 ### Usage
-Follow the instructions in run_experiments.ipynb
+Follow the instructions in run_experiments.ipynb  
 For background execution: nohup python run_experiments.py
 
 ### Credit
