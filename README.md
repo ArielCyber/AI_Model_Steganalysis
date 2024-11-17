@@ -1,5 +1,6 @@
 # AI_Model_Steganalysis
-Steganography and Steganalysis framework for pytorch models, submitted to IEEE Transactions on Information Forensics and Security.
+Code repository for the research paper "[Steganalysis of AI Models LSB Attacks](https://doi.org/10.1109/TIFS.2024.3383770)".  
+Steganography and Steganalysis framework for pytorch models.
 
 *!! Code in this repository is available for non-commercial use.  
 This work is under US Provisional Patent Application No. 63/524,681*
